@@ -58,15 +58,7 @@ app.use('/api/summary', summaryRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 
 // Catch-all route for production (FIXED)
-if (process.env.NODE_ENV === 'production') {
-  app.get('/*', (req, res) => {
-    res.json({ 
-      message: 'AI Study Assistant API',
-      status: 'running',
-      version: '1.0.0'
-    });
-  });
-}
+
 
 // Error handling (should be last)
 app.use(errorHandler);
