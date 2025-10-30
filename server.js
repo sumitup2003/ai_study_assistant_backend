@@ -43,6 +43,11 @@ app.use('/api/', limiter);
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
+// Health check (place before other routes to ensure it's accessible)
+app.get('/health', (req, res) => {
+  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/notes', notesRoutes);
@@ -52,8 +57,9 @@ app.use('/api/quiz', quizRoutes);
 app.use('/api/summary', summaryRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 
+// Catch-all route for production (FIXED)
 if (process.env.NODE_ENV === 'production') {
-  app.get('*', (req, res) => {
+  app.get('/*', (req, res) => {
     res.json({ 
       message: 'AI Study Assistant API',
       status: 'running',
@@ -62,12 +68,7 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 
-// Health check
-app.get('/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
-});
-
-// Error handling
+// Error handling (should be last)
 app.use(errorHandler);
 
 // Database connection
